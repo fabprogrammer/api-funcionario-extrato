@@ -59,5 +59,4 @@ public class Funcionario implements Serializable {
 		this.funcao = funcao;
 	}
 
-
 }
