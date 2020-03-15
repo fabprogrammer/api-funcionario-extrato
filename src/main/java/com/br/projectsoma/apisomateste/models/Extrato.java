@@ -23,7 +23,7 @@ public class Extrato {
 	private String tipoOperacao;
 
 	@Column(nullable = false)
-	private int valor;
+	private Double valor;
 
 	@Column(nullable = false)
 	@Type(type="date")
@@ -45,11 +45,11 @@ public class Extrato {
 		this.tipoOperacao = tipoOperacao;
 	}
 
-	public int getValor() {
+	public Double getValor() {
 		return valor;
 	}
 
-	public void setValor(int valor) {
+	public void setValor(Double valor) {
 		this.valor = valor;
 	}
 

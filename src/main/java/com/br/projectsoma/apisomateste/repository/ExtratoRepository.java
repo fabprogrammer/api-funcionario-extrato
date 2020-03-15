@@ -6,5 +6,5 @@ import com.br.projectsoma.apisomateste.models.Extrato;
 
 
 public interface ExtratoRepository extends JpaRepository<Extrato,Long>{
-
+	Extrato findById(long id);
 }

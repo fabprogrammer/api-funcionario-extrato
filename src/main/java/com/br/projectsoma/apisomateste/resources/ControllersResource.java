@@ -42,7 +42,7 @@ public class ControllersResource {
 	public List<Funcionario> listaFuncionarios() {
 		List<Funcionario> funcionarios = new ArrayList();
 		funcionarios = funcionarioRepository.findAll();
-		if(funcionarios == null) {
+		if(funcionarios.isEmpty() == true) {
 			throw new ResourceNotFoundException("Nenhum Funcionario Encontrado");
 		}else {
 			return funcionarios;
@@ -54,7 +54,7 @@ public class ControllersResource {
 	public ResponseEntity<?> funcionarioUnico(@PathVariable(value = "id") long id) {
 		verificarExistenciaFuncionario(id);
 		Funcionario funcionario = funcionarioRepository.findById(id);
-			return new ResponseEntity<>(funcionario, HttpStatus.OK);
+		return new ResponseEntity<>(funcionario, HttpStatus.OK);
 	}
 
 	@PostMapping("/funcionario")
@@ -83,36 +83,56 @@ public class ControllersResource {
 	@GetMapping("/extratos")
 	@ApiOperation(value = "Este método retorna uma lista de todos os extratos cadastrados no banco de dados")
 	public List<Extrato> listaExtratos() {
-		return extratoRepository.findAll();
+		List<Extrato> extratos = new ArrayList();
+		extratos = extratoRepository.findAll();
+		System.out.println("************************ extratos = " + extratos);
+		if(extratos.isEmpty() == true) {
+			throw new ResourceNotFoundException("Nenhum Extrato Encontrado");
+		}else {
+			return extratos;
+		}	
+
 	}
 
 	@GetMapping("/extrato/{id}")
 	@ApiOperation(value = "Este método retorna um extratos apenas de acordo com o id passado")
-	public Optional<Extrato> extratoUnico(@PathVariable(value = "id") long id) {
-		return extratoRepository.findById(id);
+	public ResponseEntity<?> extratoUnico(@PathVariable(value = "id") long id) {
+		verificarExistenciaExtrato(id);
+		Extrato extrato = extratoRepository.findById(id);
+		return new ResponseEntity<>(extrato, HttpStatus.OK);
 	}
 
 	@PostMapping("/extrato")
 	@ApiOperation(value = "Este método salva um extrato no banco de dados")
-	public Extrato salvarExtrato(@RequestBody Extrato extrato) {
-		return extratoRepository.save(extrato);
+	public ResponseEntity<?> salvarExtrato(@RequestBody Extrato extrato) {
+		extratoRepository.save(extrato);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@DeleteMapping("/extrato")
 	@ApiOperation(value = "Este método deleta um extrato no banco de dados")
-	public void deletaExtrato(@RequestBody Extrato extrato) {
+	public ResponseEntity<?> deletaExtrato(@RequestBody Extrato extrato) {
+		verificarExistenciaExtrato(extrato.getId());
 		extratoRepository.delete(extrato);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PutMapping("/extrato")
 	@ApiOperation(value = "Este método atualiza os dados de um extrato no banco de dados")
-	public Extrato atualizaExtrato(@RequestBody Extrato extrato) {
-		return extratoRepository.save(extrato);
+	public ResponseEntity<?> atualizaExtrato(@RequestBody Extrato extrato) {
+		verificarExistenciaExtrato(extrato.getId());
+		extratoRepository.save(extrato);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+	//
 	private void verificarExistenciaFuncionario(Long id) {
 		if(!funcionarioRepository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Nenhum Funcionario encontrado com o ID: " + id);
+	}
+	
+	private void verificarExistenciaExtrato(Long id) {
+		if(!extratoRepository.findById(id).isPresent())
+			throw new ResourceNotFoundException("Nenhum Extrato encontrado com o ID: " + id);
 	}
 	
 }
