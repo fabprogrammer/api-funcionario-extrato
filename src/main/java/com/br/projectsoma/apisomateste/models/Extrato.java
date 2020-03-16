@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.br.projectsoma.apisomateste.util.ValorTotal;
+
 @Entity
 @Table(name = "Extrato")
 public class Extrato {
@@ -28,6 +30,7 @@ public class Extrato {
 	@Column(nullable = false)
 	@Type(type="date")
 	private Date dataOperacao;
+	
 
 	public Long getId() {
 		return id;
@@ -60,8 +63,6 @@ public class Extrato {
 	public void setDataOperacao(Date dataOperacao) {
 		this.dataOperacao = dataOperacao;
 	}
-	
-	
-	
+
 
 }

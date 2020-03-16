@@ -29,8 +29,8 @@ public class SwaggerConfig {
 	private ApiInfo metaInfo() {
 
 		ApiInfo apiInfo = new ApiInfo(
-				"API SOMA TESTE", 
-				"CÓDIGO DESENVOLVIDO COM O INTUITO DE MANDAR PARA UMA TELA DADOS SOBRE FUNCIONÀRIOS DE UMA EMPRESA E O EXTRATO COM O QUE ENTRA E SAI DO BANCO.", 
+				"ApiSomaTeste", 
+				"API RESPONSÁVEL POR RETORNAR DADOS SOBRE FUNCIONARIOS, RECEITAS E DEPESAS DE UMA EMPRESA", 
 				"1.0",
 				"Terms of Service",
 				new Contact("Fábio Leite", "", "fabprogrammer@gmail.com"),

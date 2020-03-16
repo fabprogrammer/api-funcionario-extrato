@@ -2,11 +2,11 @@ package com.br.projectsoma.apisomateste.resources;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +22,7 @@ import com.br.projectsoma.apisomateste.models.Extrato;
 import com.br.projectsoma.apisomateste.models.Funcionario;
 import com.br.projectsoma.apisomateste.repository.ExtratoRepository;
 import com.br.projectsoma.apisomateste.repository.FuncionarioRepository;
+import com.br.projectsoma.apisomateste.util.ValorTotal;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "API SOMA TESTE")
 @CrossOrigin(origins = "*")
 public class ControllersResource {
-
+	double somavalorTotal;
 	@Autowired
 	FuncionarioRepository funcionarioRepository;
 	@Autowired
@@ -65,6 +66,7 @@ public class ControllersResource {
 	}
 
 	@DeleteMapping("/funcionario")
+	@PreAuthorize("hasRole('ADMIN')")
 	@ApiOperation(value = "Este método deleta um funcionario no banco de dados")
 	public ResponseEntity<?> deletaFuncionario(@RequestBody Funcionario funcionario) {
 		verificarExistenciaFuncionario(funcionario.getId());
@@ -85,14 +87,24 @@ public class ControllersResource {
 	public List<Extrato> listaExtratos() {
 		List<Extrato> extratos = new ArrayList();
 		extratos = extratoRepository.findAll();
-		System.out.println("************************ extratos = " + extratos);
 		if(extratos.isEmpty() == true) {
 			throw new ResourceNotFoundException("Nenhum Extrato Encontrado");
 		}else {
+			for(int i = 0; i < extratos.size(); i++) {
+				somavalorTotal += (extratos.get(i).getValor());
+			}
 			return extratos;
 		}	
 
 	}
+	
+	@GetMapping("/extratos-valor-total")
+	@ApiOperation(value = "Este método retorna o valor total da soma de despesas e receitas")
+	public double valorTotal() {
+		listaExtratos();
+		return somavalorTotal;
+	}
+
 
 	@GetMapping("/extrato/{id}")
 	@ApiOperation(value = "Este método retorna um extratos apenas de acordo com o id passado")
@@ -111,6 +123,7 @@ public class ControllersResource {
 
 	@DeleteMapping("/extrato")
 	@ApiOperation(value = "Este método deleta um extrato no banco de dados")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deletaExtrato(@RequestBody Extrato extrato) {
 		verificarExistenciaExtrato(extrato.getId());
 		extratoRepository.delete(extrato);
