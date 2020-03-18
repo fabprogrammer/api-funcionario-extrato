@@ -6,6 +6,8 @@ import com.br.projectsoma.apisomateste.models.Funcionario;
 
 public interface FuncionarioRepository extends JpaRepository<Funcionario,Long>{
 		Funcionario findById(long id);
+		
+		
 	
 	
 }

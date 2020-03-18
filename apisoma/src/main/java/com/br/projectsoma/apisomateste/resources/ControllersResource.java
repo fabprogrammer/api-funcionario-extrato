@@ -3,7 +3,9 @@ package com.br.projectsoma.apisomateste.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.br.projectsoma.apisomateste.error.ResourceNotFoundException;
 import com.br.projectsoma.apisomateste.models.Extrato;
@@ -38,16 +42,23 @@ public class ControllersResource {
 	@Autowired
 	ExtratoRepository extratoRepository;
 
+	/*
+	 * @Bean public WebMvcConfigurer configure() { return new WebMvcConfigurer() {
+	 * 
+	 * @Override public void addCorsMappings(CorsRegistry registry) {
+	 * registry.addMapping("/*").allowedOrigins("http://localhost:4200"); } }; }
+	 */
+
 	@GetMapping("/funcionarios")
 	@ApiOperation(value = "Este método retorna uma lista de todos os funcionários cadastrados no banco de dados")
 	public List<Funcionario> listaFuncionarios() {
 		List<Funcionario> funcionarios = new ArrayList();
 		funcionarios = funcionarioRepository.findAll();
-		if(funcionarios.isEmpty() == true) {
+		if (funcionarios.isEmpty() == true) {
 			throw new ResourceNotFoundException("Nenhum Funcionario Encontrado");
-		}else {
+		} else {
 			return funcionarios;
-		}	
+		}
 	}
 
 	@GetMapping("/funcionario/{id}")
@@ -85,26 +96,26 @@ public class ControllersResource {
 	@GetMapping("/extratos")
 	@ApiOperation(value = "Este método retorna uma lista de todos os extratos cadastrados no banco de dados")
 	public List<Extrato> listaExtratos() {
+		System.out.println("**************************ENtrou aquiiiiii");
 		List<Extrato> extratos = new ArrayList();
 		extratos = extratoRepository.findAll();
-		if(extratos.isEmpty() == true) {
+		if (extratos.isEmpty() == true) {
 			throw new ResourceNotFoundException("Nenhum Extrato Encontrado");
-		}else {
-			for(int i = 0; i < extratos.size(); i++) {
+		} else {
+			for (int i = 0; i < extratos.size(); i++) {
 				somavalorTotal += (extratos.get(i).getValor());
 			}
 			return extratos;
-		}	
+		}
 
 	}
-	
+
 	@GetMapping("/extratos-valor-total")
 	@ApiOperation(value = "Este método retorna o valor total da soma de despesas e receitas")
 	public double valorTotal() {
 		listaExtratos();
 		return somavalorTotal;
 	}
-
 
 	@GetMapping("/extrato/{id}")
 	@ApiOperation(value = "Este método retorna um extratos apenas de acordo com o id passado")
@@ -137,15 +148,16 @@ public class ControllersResource {
 		extratoRepository.save(extrato);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
 	//
 	private void verificarExistenciaFuncionario(Long id) {
-		if(!funcionarioRepository.findById(id).isPresent())
+		if (!funcionarioRepository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Nenhum Funcionario encontrado com o ID: " + id);
 	}
-	
+
 	private void verificarExistenciaExtrato(Long id) {
-		if(!extratoRepository.findById(id).isPresent())
+		if (!extratoRepository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Nenhum Extrato encontrado com o ID: " + id);
 	}
-	
+
 }

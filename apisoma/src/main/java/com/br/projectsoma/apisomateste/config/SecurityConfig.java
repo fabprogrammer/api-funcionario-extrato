@@ -18,8 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and()
 			.httpBasic()
 			.and()
-			.csrf().disable();
-		//super.configure(http);
+			.csrf().disable().cors();
 	}
 	
 	@Autowired
